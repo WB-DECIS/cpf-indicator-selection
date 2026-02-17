@@ -1,0 +1,2 @@
+# cpf-indicator-selection
+This repository contains a YAML file used to specify indicators associated with country profiles. The indicators are organized by verticals and sub-categories within each vertical. Use this file to manage and update the set of indicators relevant to different verticals and their subdivisions.
