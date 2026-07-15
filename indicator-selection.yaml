@@ -1,82 +1,195 @@
+# indicator-selection.yaml (enriched)
+# ----------------------------------
+# Generated from docs/cpf-diagnostic-indicators-groups.xlsx by
+# scripts/generate_enriched_yaml.py. Single source of indicator metadata
+# for the Data360 backend. Each entry: short_name (stable API id),
+# dataset_id (Data360 DATABASE_ID), indicator_id, full_name, group
+# (-> sub_category), direction, label. Sector = 2nd-level nesting key.
 planet:
   agriculture:
-    - FAO:FAO_CP_23014
-    - IPC:IPC_IPC_P3PLUS
-    - WB_WDI:WB_WDI_SH_STA_STNT_ZS
-    - WB_WDI:WB_WDI_AG_YLD_CREL_KG
-    - FAO:FAO_CAHD_7005
-    - WB_WDI:WB_WDI_AG_PRD_FOOD_XD
-    - WB_WDI:WB_WDI_AG_LND_AGRI_ZS
+  - short_name: food_price_inflation
+    dataset_id: FAO_CP
+    indicator_id: FAO_CP_23014
+    full_name: Food price inflation
+    group: Food and Nutrition
+    direction: lower_is_better
+    label: Food price inflation
+  - short_name: ipc_phase3_plus_population
+    dataset_id: IPC_IPC
+    indicator_id: IPC_IPC_P3PLUS
+    full_name: Population in Phase 3 food insecurity or above
+    group: Food and Nutrition
+    direction: lower_is_better
+    label: Food insecurity
+  - short_name: stunting_height_for_age_pct
+    dataset_id: UNICEF_DW
+    indicator_id: UNICEF_DW_NT_ANT_HAZ_NE2
+    full_name: Height-for-age <-2 SD (stunting)
+    group: Food and Nutrition
+    direction: lower_is_better
+    label: Stunting
+  - short_name: cereal_yield
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_AG_YLD_CREL_KG
+    full_name: Cereal yield (kg per hectare)
+    group: Production
+    direction: higher_is_better
+    label: Cereal yield
+  - short_name: population%_unable_to_afford_health_ diet
+    dataset_id: FAO_CAHD
+    indicator_id: FAO_CAHD_7005
+    full_name: Percentage of the population unable to afford a healthy diet (percent)
+    group: Food and Nutrition
+    direction: lower_is_better
+    label: Population unable to afford a healthy diet
+  - short_name: afs_on_farm
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_SL_AGR_EMPL_ZS
+    full_name: Employment share in agriculture and food system (on-farm)
+    group: Jobs
+    direction: higher_is_better
+    label: On-Farm Employment Share
+  - short_name: afs_off_farm
+    dataset_id: WB_AFS
+    indicator_id: AG_SH_OFFFR
+    full_name: Employment share in agriculture and food system (off-farm)
+    group: Jobs
+    direction: higher_is_better
+    label: Off-Farm Employment Share
   climate_change:
-    - WB_CCKP:WB_CCKP_CDD
-    - WB_CCKP:WB_CCKP_HI35
-    - WB_CSC:WB_CSC_EN_ATM_GHGT_GT_CE
-    - OWID:OWID_CB_GHG_EXCLUDING_LUCF_PER_CAPITA
-    - WB_CLEAR:WB_CLEAR_EXP_DRT
-    - FAO:FAO_AS_4543
-    - WB_WDI:WB_WDI_EN_ATM_CO2E_PC
-    - WB_WDI:WB_WDI_EN_ATM_GHGT_KT_CE
-    - WB_WDI:WB_WDI_EN_CLC_MDAT_ZS
+  - short_name: consecutive_dry_days
+    dataset_id: WB_CCKP
+    indicator_id: WB_CCKP_CDD
+    full_name: Number of Consecutive Dry Days
+    group: Adaptation
+    direction: lower_is_better
+    label: Number of Consecutive Dry Days
+  - short_name: days_heat_index_gt35c
+    dataset_id: WB_CCKP
+    indicator_id: WB_CCKP_HI35
+    full_name: Number of Days with Heat Index >35C
+    group: Adaptation
+    direction: lower_is_better
+    label: Number of Hot Days
+  - short_name: exposure_to_droughts
+    dataset_id: WB_CLEAR
+    indicator_id: WB_CLEAR_EXP_DRT
+    full_name: Exposure to Droughts
+    group: Adaptation
+    direction: lower_is_better
+    label: Exposure to Droughts
+  - short_name: flood_occurrence
+    dataset_id: FAO_AS
+    indicator_id: FAO_AS_4543
+    full_name: Flood occurrence (WRI)
+    group: Adaptation
+    direction: lower_is_better
+    label: Flood occurrence (WRI)
+  - short_name: total_ghg_emissions
+    dataset_id: OWID_CB
+    indicator_id: OWID_CB_TOTAL_GHG
+    full_name: Total greenhouse gas emissions
+    group: Mitigation
+    direction: lower_is_better
+    label: Total GHG emissions
+  - short_name: co2_intensity
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_EN_GHG_CO2_RT_GDP_PP_KD
+    full_name: Carbon intensity
+    group: Mitigation
+    direction: lower_is_better
+    label: Carbon intensity
   environment:
-    - OHI:OHI_OHI_GIS
-    - WB_CSC:WB_CSC_EN_ATM_HAZA
-    - WB_CSC:WB_CSC_ER_LND_HEAL
-    - WB_WDI:WB_WDI_ER_PTD_TOTL_ZS
-    - WB_WDI:WB_WDI_ER_MRN_PTMR_ZS
+  - short_name: ocean_health_index
+    dataset_id: OHI_OHI
+    indicator_id: OHI_OHI_GIS
+    full_name: Ocean Health Global Index Scores
+    group: Blue
+    direction: higher_is_better
+    label: Ocean Health
+  - short_name: hazardous_air_exposure_pct
+    dataset_id: WB_CSC
+    indicator_id: WB_CSC_EN_ATM_HAZA
+    full_name: Percentage of people exposed to hazardous air quality
+    group: Brown
+    direction: lower_is_better
+    label: Population exposed to hazardous air quality
+  - short_name: key_ecosystems_hectares
+    dataset_id: WB_CSC
+    indicator_id: WB_CSC_ER_LND_HEAL
+    full_name: Hectares of key ecosystems (globally)
+    group: Green
+    direction: higher_is_better
+    label: Hectares of key ecosystems
+  - short_name: marine_protected_areas
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_ER_MRN_PTMR_ZS
+    full_name: Marine protected areas (% of territorial waters)
+    group: Blue
+    direction: higher_is_better
+    label: Marine protected areas
+  - short_name: protected_land_water_area_share
+    dataset_id: WB_CSC
+    indicator_id: WB_CSC_ER_PTD_TOTL_ZS
+    full_name: Percentage of terrestrial and aquatic areas that are protected
+    group: Blue
+    direction: higher_is_better
+    label: Terrestrial and aquatic areas that are protected
+  - short_name: primary_forest_loss
+    dataset_id: WRI_GFW
+    indicator_id: WRI_GFW_PRFRST_LOSS
+    full_name: Primary Forest Loss
+    group: Green
+    direction: lower_is_better
+    label: Primary Forest Loss
+  - short_name: forest_area
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_AG_LND_FRST_ZS
+    full_name: Forest area (% of land area)
+    group: Green
+    direction: higher_is_better
+    label: Forest area
   water:
-    - WB_WDI:WB_WDI_ER_H2O_FWST_ZS
-    - WB_WDI:WB_WDI_ER_H2O_FWTL_K3
-    - WB_WDI:WB_WDI_SH_H2O_SMDW_ZS
-    - WB_WDI:WB_WDI_SH_STA_SMSS_ZS
-    - FAO:FAO_AS_4551
-    - WB_CLEAR:WB_CLEAR_AQUASTAT_4158
-    - WB_CLEAR:WB_CLEAR_WTL_NEW
-    - FAO:FAO_EMSTOT_6518
-  social_development:
-    - WB_SSGD:WB_SSGD_CIVIC_SPACE_IDX
-    - WB_SSGD:WB_SSGD_PCT_POP_INSECURE_NEIGHBORHOOD
-    - WB_SSGD:WB_SSGD_PCT_POP_TRUST
-    - WB_SSGD:WB_SSGD_PCT_POP_CONF_ELECTIONS
-    - WB_WDI:WB_WDI_SG_GEN_PARL_ZS
-
-people:
-  health:
-    - WB_WDI:WB_WDI_SP_DYN_LE00_IN
-    - WB_WDI:WB_WDI_SH_DYN_MORT
-    - WB_WDI:WB_WDI_SH_STA_STNT_ZS
-  education:
-    - WB_WDI:WB_WDI_SE_PRM_ENRR
-    - WB_WDI:WB_WDI_SE_SEC_ENRR
-    - WB_WDI:WB_WDI_SE_ADT_LITR_ZS
-  employment:
-    - WB_WDI:WB_WDI_SL_UEM_TOTL_ZS
-    - WB_WDI:WB_WDI_SL_TLF_CACT_ZS
-
-prosperity:
-  economic_growth:
-    - WB_WDI:WB_WDI_NY_GDP_MKTP_CD
-    - WB_WDI:WB_WDI_NY_GDP_PCAP_CD
-    - WB_WDI:WB_WDI_NY_GDP_MKTP_KD_ZG
-  poverty:
-    - WB_WDI:WB_WDI_SI_POV_DDAY
-    - WB_WDI:WB_WDI_SI_POV_GINI
-  trade:
-    - WB_WDI:WB_WDI_NE_EXP_GNFS_ZS
-    - WB_WDI:WB_WDI_NE_IMP_GNFS_ZS
-
-infrastructure:
-  energy:
-    - WB_WDI:WB_WDI_EG_ELC_ACCS_ZS
-    - WB_WDI:WB_WDI_EG_USE_ELEC_KH_PC
-  transport:
-    - WB_WDI:WB_WDI_IS_ROD_PAVE_ZS
-    - WB_WDI:WB_WDI_IS_AIR_DPRT
-
-digital:
-  connectivity:
-    - WB_WDI:WB_WDI_IT_CEL_SETS_P2
-    - WB_WDI:WB_WDI_IT_NET_USER_ZS
-    - WB_WDI:WB_WDI_IT_NET_BBND_P2
-  innovation:
-    - WB_WDI:WB_WDI_GB_XPD_RSDV_GD_ZS
-    - WB_WDI:WB_WDI_IP_PAT_RESD
+  - short_name: water_stress_withdrawal_ratio
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_ER_H2O_FWST_ZS
+    full_name: 'Level of water stress: freshwater withdrawal as a proportion of available
+      freshwater resources'
+    group: Water resources
+    direction: lower_is_better
+    label: Level of water stress
+  - short_name: safely_managed_drinking_water_pct
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_SH_H2O_SMDW_ZS
+    full_name: People using safely managed drinking water services (% of population)
+    group: WASH
+    direction: higher_is_better
+    label: Safely managed drinking water services
+  - short_name: safely_managed_sanitation_pct
+    dataset_id: WB_WDI
+    indicator_id: WB_WDI_SH_STA_SMSS_ZS
+    full_name: People using safely managed sanitation services (% of population)
+    group: WASH
+    direction: higher_is_better
+    label: Safely managed sanitation services
+  - short_name: SDG_Water
+    dataset_id: WB_CLEAR
+    indicator_id: WB_CLEAR_AQUASTAT_4551
+    full_name: SDG 6.4.1. Water Use Efficiency (US$/m3)
+    group: Water resources
+    direction: higher_is_better
+    label: Water Use Efficiency
+  - short_name: water_availability_per_capita
+    dataset_id: WB_CLEAR
+    indicator_id: WB_CLEAR_AQUASTAT_4158
+    full_name: Availability of water resources per capita (m3 per capita per year)
+    group: Water resources
+    direction: higher_is_better
+    label: Availability of water resources
+  - short_name: wetlands_loss_score
+    dataset_id: WB_CLEAR
+    indicator_id: WB_CLEAR_WTL_NEW
+    full_name: Wetlands loss score
+    group: Water resources
+    direction: lower_is_better
+    label: Wetlands loss score
