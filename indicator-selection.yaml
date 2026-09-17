@@ -35,7 +35,7 @@ planet:
     group: Production
     direction: higher_is_better
     label: Cereal yield
-  - short_name: population%_unable_to_afford_health_ diet
+  - short_name: population_unable_to_afford_healthy_ diet
     dataset_id: FAO_CAHD
     indicator_id: FAO_CAHD_7005
     full_name: Percentage of the population unable to afford a healthy diet (percent)
