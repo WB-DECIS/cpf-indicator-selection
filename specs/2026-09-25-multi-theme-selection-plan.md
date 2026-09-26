@@ -4,7 +4,7 @@
 
 **Goal:** Turn the single `indicator-selection.yaml` into one indicator list per theme plus an ordered index, with a JSON Schema, a validator and CI, so that adding a theme becomes a data change that CI checks before `cpf-data360-sync` ever reads it.
 
-**Architecture:** `themes.yaml` lists the published themes (`{id, name, file}`, in tab order); each `themes/<id>.yaml` holds one theme's sectors and indicators in display order. Two JSON Schema files (draft 2020-12) describe the two file kinds, and `scripts/validate.py` applies them plus the four cross-file rules a schema cannot express. The sync job validates against the same schema files, read from `main`, and implements the same four rules. `themes/planet.yaml` is generated once from today's `planet:` block; `indicator-selection.yaml` stays untouched until the new sync job is live.
+**Architecture:** `themes.yaml` lists the published themes (`{id, name, file}`, in tab order); each `themes/<id>.yaml` holds one theme's sectors and indicators in display order. Two JSON Schema files (draft 2020-12) describe the two file kinds, and `scripts/validate.py` applies them plus the four cross-file rules a schema cannot express. The sync job validates against the same schema files, read from its own branch (`main` for PROD, `DEV` for the DEV sync), and implements the same four rules. `themes/planet.yaml` is generated once from today's `planet:` block; `indicator-selection.yaml` stays untouched until the new sync job is live.
 
 **Tech Stack:** Python 3.11+ (verified on 3.11; CI uses 3.12), PyYAML 6, jsonschema 4 (`Draft202012Validator`), pytest 8+, GitHub Actions.
 
@@ -24,17 +24,19 @@
   - Cross-file rules, in `scripts/validate.py` and in the sync: (1) theme `id`s unique in `themes.yaml`; (2) every listed `file` exists; (3) `short_name` unique within a file; (4) sector names unique within a file after `norm(s) = " ".join(s.replace("_", " ").split()).lower()` (mirrors cpf-report's `.norm_sector()`).
   - Files under `themes/` that `themes.yaml` does not list are **drafts**: schema-checked only. Listing a theme publishes it.
   - Planet migration: `agriculture → Agriculture`, `climate_change → Climate change`, `environment → Environment`, `water → Water`; `total_ghg_emissions` gets `sector_mean: false`; order preserved.
-  - Raw base URL the sync reads from: `https://raw.githubusercontent.com/WB-DECIS/cpf-indicator-selection/main/`. Paths in this repository (`themes.yaml`, `schema/*.json`, `themes/*.yaml`) are therefore part of the contract.
+  - Raw base URL the sync reads from: `https://raw.githubusercontent.com/WB-DECIS/cpf-indicator-selection/<ref>/`, where `<ref>` is the sync's `CPF_SELECTION_REF` — `main` for PROD (the default), `DEV` for the DEV sync. Paths in this repository (`themes.yaml`, `schema/*.json`, `themes/*.yaml`) are therefore part of the contract, on both branches.
 - **Vocabulary:** **theme** everywhere; "pillar" and "vertical" are retired in new files.
 - **Do not edit `indicator-selection.yaml`.** The current sync job reads it until rollout step 2; it is deleted in step 6.
 - **Tests never touch the network**, and never depend on anything outside this repository.
 - **Running:** from the repository root, in a virtualenv: `pip install -r requirements-dev.txt`, then `python scripts/validate.py` and `pytest`.
+- **Branch workflow** (spec → "Environments"): feature branch from `DEV` → PR into `DEV` (CI green) → the DEV sync (which reads `DEV`) renders → check the DEV chain → PR `DEV` → `main` → the PROD sync reads it at its next render. Hotfixes: branch from `main`, PR into `main`, then merge `main` back into `DEV`. `DEV` does not exist yet: Task 5, Step 8 creates it from `main`, and this plan's branch is then opened as a PR into `DEV`.
 - **Commits:** conventional prefixes (`feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`). Work on branch `claude/vigilant-mayer-k6q1po` (already checked out). Do not push.
 - **Scope:** this repository only. The sync, API and app changes have their own plans.
 
 ### Rollout note
 
 - This plan is **rollout step 0**. It is safe on its own: the current sync job still reads `indicator-selection.yaml`.
+- **The Planet migration lands on `DEV` first:** its PR goes into `DEV`, is checked on the DEV chain, and reaches `main` (PROD) only through a `DEV` → `main` pull request.
 - **Keep Planet's four sector names** (`Agriculture`, `Climate change`, `Environment`, `Water`) until step 3 is live. From step 2 the new sync publishes them from `themes/planet.yaml`, and the app deployed until step 3 hard-codes them; a renamed sector breaks its whole Sectors grid. `tests/test_migration.py` enforces this (Task 4).
 - **Before cpf-report deploys (step 3)**, the Planet team confirms the order of `themes/planet.yaml`: the new app follows list order instead of its out-of-date constants. Any reorder before step 6 is made in both `themes/planet.yaml` and `indicator-selection.yaml` (the parity test requires it; reordering the old file is harmless).
 
@@ -50,7 +52,7 @@
 | `themes/planet.yaml` | new (generated) | Planet's list in the new shape |
 | `themes.yaml` | new | Index: Planet only |
 | `.github/CODEOWNERS` | new | Platform owner vs theme teams (placeholder handles) |
-| `.github/workflows/validate.yml` | new | CI: validator + pytest on pull requests and pushes to `main` |
+| `.github/workflows/validate.yml` | new | CI: validator + pytest on pull requests into, and pushes to, `main` and `DEV` |
 | `tests/fixtures/valid/…` | new | A valid root: index + the shared Infrastructure fixture |
 | `tests/fixtures/invalid-theme-cases.yaml`, `tests/fixtures/invalid-index-cases.yaml` | new | Named documents each schema must reject, with the expected message |
 | `tests/test_schema.py`, `tests/test_validate.py`, `tests/test_migration.py`, `tests/test_repository.py` | new | One file per unit |
@@ -135,7 +137,7 @@ git commit -m "chore: add pytest tooling and dev requirements"
 - Create: `schema/theme.schema.json`
 
 **Interfaces:**
-- Produces: `schema/themes-index.schema.json` and `schema/theme.schema.json` — the seam artifact `cpf-data360-sync` validates against (read from the raw base URL on `main`).
+- Produces: `schema/themes-index.schema.json` and `schema/theme.schema.json` — the seam artifact `cpf-data360-sync` validates against (read from the raw base URL on `main`, or on `DEV` for the DEV sync).
 - Produces: `tests/fixtures/valid/` — a valid repository root (index + the shared Infrastructure fixture, verbatim from the shared contract), reused by Task 3.
 
 - [ ] **Step 1: Add the valid fixtures**
@@ -513,6 +515,8 @@ Create `schema/theme.schema.json`:
 ```
 
 `themes` has `minItems: 1`: an index with no themes would publish nothing and the API refuses to start with zero themes, so CI rejects it first.
+
+Both `$id`s name `main`. An `$id` is only an identifier: nothing fetches it — the validator loads the schema files from disk, the sync reads them from its own branch's raw URL, and the only `$ref`s are local (`#/$defs/…`). So the `$id`s stay the same on `DEV`, and the schema files are identical on both branches.
 
 - [ ] **Step 6: Run the tests to verify they pass**
 
@@ -1182,7 +1186,7 @@ git commit -m "feat: migrate the planet block to themes/planet.yaml"
 - Create: `.github/workflows/validate.yml`
 
 **Interfaces:**
-- Produces: `themes.yaml` listing Planet — the index the sync job reads from `main` from step 2 on; CI that runs the validator and `pytest` on every pull request and on pushes to `main`.
+- Produces: `themes.yaml` listing Planet — the index the sync jobs read from step 2 on (the DEV sync from `DEV`, the PROD sync from `main`); CI that runs the validator and `pytest` on pull requests into, and pushes to, `main` and `DEV`; the `DEV` branch (Step 8).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1245,7 +1249,7 @@ Create `.github/CODEOWNERS`:
 /themes/planet.yaml   @WB-DECIS/planet-team
 ```
 
-`@WB-DECIS/cpf-platform` and `@WB-DECIS/planet-team` are **placeholders**: replace them with the real team handles before merging. GitHub ignores a line whose owner lacks write access, and the file has effect only with "Require review from Code Owners" on in `main`'s branch protection.
+`@WB-DECIS/cpf-platform` and `@WB-DECIS/planet-team` are **placeholders**: replace them with the real team handles before merging. GitHub ignores a line whose owner lacks write access, and the file has effect only with "Require review from Code Owners" on in the branch protection of both `DEV` and `main`.
 
 - [ ] **Step 5: Add the workflow**
 
@@ -1256,8 +1260,9 @@ name: validate
 
 on:
   pull_request:
+    branches: [main, DEV]
   push:
-    branches: [main]
+    branches: [main, DEV]
 
 permissions:
   contents: read
@@ -1300,6 +1305,20 @@ git add themes.yaml .github/CODEOWNERS .github/workflows/validate.yml tests/test
 git commit -m "feat: list planet in themes.yaml and add CODEOWNERS and CI"
 ```
 
+The workflow runs on pull requests into `main` or `DEV` and on pushes to either branch, so both the feature → `DEV` and the `DEV` → `main` pull requests are checked. No test reads the workflow file; the count above is unchanged.
+
+- [ ] **Step 8: Create DEV from main**
+
+`DEV` starts as a copy of `main`, before any of this plan's commits, so this branch can be opened as a pull request into it:
+
+```bash
+git fetch origin
+git branch DEV origin/main
+git log --oneline -1 DEV
+```
+
+Expected: the same commit as `origin/main`. Pushing `DEV` (`git push origin DEV`), making it a protected branch (PRs required, the `validate` check required once it has run, CODEOWNERS review) and doing the same on `main` are done by the repository owner, not in this plan.
+
 ---
 
 ### Task 6: README
@@ -1318,8 +1337,20 @@ The current `README.md` is one paragraph (`This repository contains a YAML file 
 # cpf-indicator-selection
 
 The indicator lists behind the CPF Country Diagnostics dashboard, one list per theme. The
-`cpf-data360-sync` job reads them from `main`, fetches each theme's data from Data360 and
-publishes it for `cpf-api`; the app shows one tab per theme.
+`cpf-data360-sync` job reads them — the PROD job from `main`, the DEV job from `DEV` — fetches
+each theme's data from Data360 and publishes it for `cpf-api`; the app shows one tab per theme.
+
+## Branches
+
+| Branch | Read by | Environment |
+|---|---|---|
+| `DEV` | the DEV sync (`CPF_SELECTION_REF=DEV`) | DEV: `dev-cpf-api` and the DEV app |
+| `main` | the PROD sync | PROD |
+
+Every change goes to `DEV` first: a feature branch from `DEV`, a pull request into `DEV` (CI
+green), a check on the DEV chain, then a pull request `DEV` → `main`, which publishes it to PROD.
+Hotfixes branch from `main`, go into `main`, and are then merged back into `DEV`. Both branches
+are protected: pull requests required, the `validate` check required, and CODEOWNERS review.
 
 ## Layout
 
@@ -1360,7 +1391,7 @@ sectors:
 ## Validation
 
 `python scripts/validate.py [root]` exits 0 when the repository is valid and 1 with one line per
-problem otherwise. CI runs it and `pytest` on every pull request and on pushes to `main`. It checks:
+problem otherwise. CI runs it and `pytest` on pull requests into, and pushes to, `DEV` and `main`. It checks:
 
 - `themes.yaml` against `schema/themes-index.schema.json`: theme `id`s are lower-case letters,
   digits and underscores, starting with a letter;
@@ -1386,18 +1417,23 @@ pytest
 
 ## Adding a theme
 
-1. **Draft.** Open a pull request that adds `themes/<id>.yaml` and a `CODEOWNERS` line for the
-   theme's team. Do not list it in `themes.yaml` yet: an unlisted file is only schema-checked, and
-   nothing publishes it, so it can be merged and refined on `main`.
-2. **Publish.** When the list is ready, the platform owner opens a pull request that adds
-   `{id, name, file}` to `themes.yaml`, at the position the tab should take. CI now applies every
-   rule to the file. Merging publishes the theme at the next render of the sync job.
-3. **Go live** (on Posit Connect, by whoever runs the rollout):
-   1. render `cpf-data360-sync` (or wait for its schedule);
-   2. grant the API's account viewer access to the theme's two new pins,
-      `cpf_observations_<id>` and `cpf_metadata_<id>` — Connect creates them owner-only, and until
-      the grant the API logs an ERROR and leaves the theme out;
-   3. restart the API, then the app, which builds its theme list at startup.
+1. **Draft.** Open a pull request into `DEV` that adds `themes/<id>.yaml` and a `CODEOWNERS`
+   line for the theme's team. Do not list it in `themes.yaml` yet: an unlisted file is only
+   schema-checked, and nothing publishes it, so it can be merged and refined on `DEV`.
+2. **List it on `DEV`.** When the list is ready, the platform owner opens a pull request into
+   `DEV` that adds `{id, name, file}` to `themes.yaml`, at the position the tab should take. CI
+   now applies every rule to the file. Merging publishes the theme on the DEV chain only, at the
+   next render of the DEV sync job.
+3. **Check it on DEV** (on Posit Connect, by whoever runs the rollout):
+   1. render the DEV `cpf-data360-sync` content (or wait for its schedule);
+   2. grant `dev-cpf-api`'s account viewer access to the theme's two new pins,
+      `dev_cpf_observations_<id>` and `dev_cpf_metadata_<id>` — Connect creates them owner-only,
+      and until the grant the API logs an ERROR and leaves the theme out;
+   3. restart `dev-cpf-api`, then the DEV app, which builds its theme list at startup, and check
+      the new tab.
+4. **Publish to PROD.** Open a pull request `DEV` → `main`. After it merges, repeat step 3 on
+   PROD: render the PROD sync, grant `cpf-api` viewer access to `cpf_observations_<id>` and
+   `cpf_metadata_<id>`, restart `cpf-api`, then the app.
 
 No code changes in any repository. Before the first theme after Planet, the methodology document
 must already be theme-neutral (design, rollout step 5).
@@ -1418,7 +1454,7 @@ hard-codes them.
 `.github/CODEOWNERS` gives the platform owner the index, the schema, the scripts and CI, and each
 theme's team its own file. The handles in it (`@WB-DECIS/cpf-platform`, `@WB-DECIS/planet-team`)
 are placeholders: replace them with real teams that have write access, and turn on "Require review
-from Code Owners" in the `main` branch protection, or the file has no effect.
+from Code Owners" in the branch protection of both `DEV` and `main`, or the file has no effect.
 ````
 
 - [ ] **Step 2: Run everything once more**
@@ -1452,10 +1488,10 @@ git commit -m "docs: document themes, validation and adding a theme"
 
 ## After the tasks
 
-- **Rollout step 0:** open the pull request (after replacing the CODEOWNERS placeholders) and merge once CI is green. Nothing reads the new files yet; the current sync job keeps reading `indicator-selection.yaml`. Then make the `validate` job a required status check on `main`.
-- **Local chain** (spec → Verification, before step 3): the sync plan's local run uses this repository through `CPF_SELECTION_DIR=<local checkout>`, with a `themes.yaml` that also lists the Infrastructure draft below. Do that listing in the local checkout only; never push it before step 4.
-- **Drafting Infrastructure** (starting point for rollout step 4): copy the shared fixture, `tests/fixtures/valid/themes/infrastructure.yaml`, to `themes/infrastructure.yaml` and add `/themes/infrastructure.yaml @WB-DECIS/<infrastructure-team>` to CODEOWNERS. Leave it out of `themes.yaml` until step 4 (its prerequisite is the methodology's step 5). Verified: unlisted, the validator reports `OK: themes.yaml, 1 listed theme file(s), 1 unlisted draft(s)`; listed, `OK: themes.yaml, 2 listed theme file(s), 0 unlisted draft(s)`; renaming its "ICT and digital" sector to `water` then fails with `ERROR themes/infrastructure.yaml: sector 'water' has the same name as 'Water' once case, spaces and underscores are ignored`. Confirm the three Data360 ids (`WB_WDI_EG_ELC_ACCS_ZS`, `WB_WDI_SH_H2O_SMDW_ZS`, `WB_WDI_IT_NET_USER_ZS`) against the Data360 metadata endpoint before a live local-chain run.
+- **Rollout step 0:** once the repository owner has pushed `DEV` (Task 5, Step 8), open the pull request into `DEV` (after replacing the CODEOWNERS placeholders) and merge once CI is green. Nothing reads the new files yet; the current sync job keeps reading `indicator-selection.yaml`. Then open the pull request `DEV` → `main` and merge it once CI is green. Make the `validate` job a required status check on both `DEV` and `main`.
+- **Local chain** (spec → Verification, before step 3): the sync plan's local run uses this repository through `CPF_SELECTION_DIR=<local checkout>`, with a `themes.yaml` that also lists the Infrastructure draft below. Do that listing in the local checkout only; never push it before step 4. The local chain is optional, for offline work: the DEV chain is where changes are checked.
+- **Drafting Infrastructure** (starting point for rollout step 4): copy the shared fixture, `tests/fixtures/valid/themes/infrastructure.yaml`, to `themes/infrastructure.yaml` and add `/themes/infrastructure.yaml @WB-DECIS/<infrastructure-team>` to CODEOWNERS. Leave it out of `themes.yaml` until step 4 (its prerequisite is the methodology's step 5); in step 4, list it on `DEV` (a pull request into `DEV`), check it in the DEV app, then promote it with a `DEV` → `main` pull request (README → Adding a theme). Verified: unlisted, the validator reports `OK: themes.yaml, 1 listed theme file(s), 1 unlisted draft(s)`; listed, `OK: themes.yaml, 2 listed theme file(s), 0 unlisted draft(s)`; renaming its "ICT and digital" sector to `water` then fails with `ERROR themes/infrastructure.yaml: sector 'water' has the same name as 'Water' once case, spaces and underscores are ignored`. Confirm the three Data360 ids (`WB_WDI_EG_ELC_ACCS_ZS`, `WB_WDI_SH_H2O_SMDW_ZS`, `WB_WDI_IT_NET_USER_ZS`) against the Data360 metadata endpoint before a live local-chain run.
 - **Step 3:** once the multi-theme app is live, `test_planet_keeps_its_four_sector_names` can be deleted; the Planet team may then rename sectors.
 - **Step 6 (cleanup):** delete `indicator-selection.yaml`, `scripts/migrate_planet.py` and `tests/test_migration.py` in one commit, and update the README's "Retiring `indicator-selection.yaml`" section.
-- **Changing the schema later** is a cross-repository change: the sync validates against these files from `main`, so a new required field or a tighter rule rejects every theme at the next render until the lists comply. Add optional fields first.
-- **Not verified here:** the workflow was not run on GitHub Actions (its steps were run by hand in a fresh virtualenv: `OK: …`, `51 passed`), and CODEOWNERS enforcement depends on the real handles and branch protection.
+- **Changing the schema later** is a cross-repository change: each sync validates against these files from its own branch, so a new required field or a tighter rule rejects every theme at the next render until the lists comply. Add optional fields first, and land the change on `DEV` first: the DEV sync render shows a rejection before PROD does.
+- **Not verified here:** the workflow was not run on GitHub Actions (its steps were run by hand in a fresh virtualenv: `OK: …`, `51 passed`), so its `DEV` triggers are untested; CODEOWNERS enforcement depends on the real handles and branch protection.
