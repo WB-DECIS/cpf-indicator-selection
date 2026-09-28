@@ -1,0 +1,5 @@
+# Test configuration only: this repository holds data, not a Python package.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["scripts"]
+addopts = "-ra"
