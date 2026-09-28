@@ -97,6 +97,21 @@ def test_listed_file_must_exist(root):
     ]
 
 
+@pytest.mark.parametrize("kind", ["absolute", "dot_dot"])
+def test_listed_file_must_be_under_themes(root, kind):
+    # Both paths reach the valid fixture file, so only the schema stops them.
+    file = {
+        "absolute": (root / "themes" / "infrastructure.yaml").as_posix(),
+        "dot_dot": f"../{root.name}/themes/infrastructure.yaml",
+    }[kind]
+    write(root / "themes.yaml",
+          {"themes": [{"id": "infrastructure", "name": "Infrastructure", "file": file}]})
+    assert validate.validate_root(root) == [
+        f"themes.yaml: $.themes[0].file: '{file}' does not match "
+        r"'^themes/[a-z][a-z0-9_]*\\.yaml$'"
+    ]
+
+
 def test_duplicate_short_name_in_a_listed_file(root):
     doc = infrastructure(root)
     doc["sectors"][2]["indicators"][0]["short_name"] = "access_to_electricity"

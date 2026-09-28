@@ -89,6 +89,7 @@ def check(root):
             if theme["id"] in seen_ids:
                 errors.append(f"{INDEX_FILE}: theme id '{theme['id']}' is listed more than once")
             seen_ids.add(theme["id"])
+            # The schema's pattern keeps file under root/themes/; only then is this join safe.
             file = Path(theme["file"]).as_posix()
             if not (root / file).is_file():
                 errors.append(

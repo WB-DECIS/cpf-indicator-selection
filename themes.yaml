@@ -1,10 +1,10 @@
 # themes.yaml
 # -----------
 # Published themes, maintained by the platform owner (see CODEOWNERS).
-# Order is the tab order in the app. Listing a theme publishes it at the
-# next render of the cpf-data360-sync job, so list a theme only when its
-# file is ready. Validated against schema/themes-index.schema.json by
-# scripts/validate.py.
+# Order is the tab order in the app. Once the multi-theme cpf-data360-sync
+# job is live (rollout step 2), listing a theme publishes it at the job's
+# next render, so list a theme only when its file is ready. Validated
+# against schema/themes-index.schema.json by scripts/validate.py.
 themes:
   - id: planet
     name: Planet

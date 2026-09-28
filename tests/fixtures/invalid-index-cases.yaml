@@ -20,6 +20,26 @@ missing_file:
   document:
     themes:
       - {id: planet, name: Planet}
+absolute_file:
+  error: "'/themes/planet.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: /themes/planet.yaml}
+file_in_parent_dir:
+  error: "'../themes/planet.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: ../themes/planet.yaml}
+dot_dot_in_file:
+  error: "'themes/../indicator-selection.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: themes/../indicator-selection.yaml}
+file_outside_themes_dir:
+  error: "'indicator-selection.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: indicator-selection.yaml}
 empty_name:
   error: "should be non-empty"
   document:

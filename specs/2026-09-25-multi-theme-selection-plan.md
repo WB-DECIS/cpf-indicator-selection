@@ -18,7 +18,7 @@
 
   It is also where the manual half of "sync → api, on Connect" is written down for new themes (README → Adding a theme; spec → "Adding a theme afterwards").
 - **Fixed contract** (shared with the sync and API plans; do not change a value here without changing it there):
-  - `themes.yaml`: `themes:` → list of `{id, name, file}`. `id` matches `^[a-z][a-z0-9_]*$`. Order is the app's tab order.
+  - `themes.yaml`: `themes:` → list of `{id, name, file}`. `id` matches `^[a-z][a-z0-9_]*$`; `file` matches `^themes/[a-z][a-z0-9_]*\.yaml$` (a file directly under `themes/`). Order is the app's tab order.
   - `themes/<id>.yaml`: `sectors:` → list of `{name, indicators}`; each indicator has seven required non-empty strings — `short_name`, `dataset_id`, `indicator_id`, `full_name`, `group`, `direction`, `label` — plus an optional boolean `sector_mean` (default `true`). `direction` is `higher_is_better` or `lower_is_better`. `sectors` and `indicators` are non-empty.
   - Both schemas are JSON Schema draft 2020-12 with `additionalProperties: false` on every object.
   - Cross-file rules, in `scripts/validate.py` and in the sync: (1) theme `id`s unique in `themes.yaml`; (2) every listed `file` exists; (3) `short_name` unique within a file; (4) sector names unique within a file after `norm(s) = " ".join(s.replace("_", " ").split()).lower()` (mirrors cpf-report's `.norm_sector()`).

@@ -58,7 +58,8 @@ sectors:
 problem otherwise. CI runs it and `pytest` on pull requests into, and pushes to, `DEV` and `main`. It checks:
 
 - `themes.yaml` against `schema/themes-index.schema.json`: theme `id`s are lower-case letters,
-  digits and underscores, starting with a letter;
+  digits and underscores, starting with a letter, and each `file` is `themes/<name>.yaml`, with
+  `<name>` following the same rule (no absolute paths, `..` or files outside `themes/`);
 - every theme file against `schema/theme.schema.json`: the seven fields above are required
   non-empty strings, `direction` is one of the two values, `sector_mean` is a boolean, no other
   keys, and no empty `sectors` or `indicators` lists;

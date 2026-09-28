@@ -26,9 +26,9 @@
             "minLength": 1
           },
           "file": {
-            "description": "Path of the theme's list, relative to the repository root.",
+            "description": "Path of the theme's list, relative to the repository root: a file directly under themes/, by convention themes/<id>.yaml. No absolute paths or '..'.",
             "type": "string",
-            "minLength": 1
+            "pattern": "^themes/[a-z][a-z0-9_]*\\.yaml$"
           }
         }
       }
