@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/WB-DECIS/cpf-indicator-selection/main/schema/themes-index.schema.json",
+  "title": "CPF themes index (themes.yaml)",
+  "description": "Ordered list of published themes. Order is the tab order in the app; listing a theme publishes it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["themes"],
+  "properties": {
+    "themes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "file"],
+        "properties": {
+          "id": {
+            "description": "Pin-name suffix in the sync job and Shiny module namespace in the app.",
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "name": {
+            "description": "Display name, shown as the tab label.",
+            "type": "string",
+            "minLength": 1
+          },
+          "file": {
+            "description": "Path of the theme's list, relative to the repository root: a file directly under themes/, by convention themes/<id>.yaml. No absolute paths or '..'.",
+            "type": "string",
+            "pattern": "^themes/[a-z][a-z0-9_]*\\.yaml$"
+          }
+        }
+      }
+    }
+  }
+}

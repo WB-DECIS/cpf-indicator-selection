@@ -1,0 +1,13 @@
+# Replace the placeholder team handles before merging (README -> Ownership).
+# The last matching line wins.
+
+# Platform owner: everything not matched below, including the index, the
+# schema, the validator and CI.
+*                     @WB-DECIS/cpf-platform
+/themes.yaml          @WB-DECIS/cpf-platform
+/schema/              @WB-DECIS/cpf-platform
+/scripts/             @WB-DECIS/cpf-platform
+/.github/             @WB-DECIS/cpf-platform
+
+# One line per theme file, owned by that theme's team.
+/themes/planet.yaml   @WB-DECIS/planet-team

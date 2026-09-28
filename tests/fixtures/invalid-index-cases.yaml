@@ -1,0 +1,62 @@
+# themes.yaml documents the schema must reject. Each key is a test id; `error`
+# is a fragment of the message the schema must give; `document` is the index.
+uppercase_id:
+  error: "'Planet' does not match"
+  document:
+    themes:
+      - {id: Planet, name: Planet, file: themes/planet.yaml}
+id_starts_with_digit:
+  error: "'2planet' does not match"
+  document:
+    themes:
+      - {id: 2planet, name: Planet, file: themes/planet.yaml}
+hyphen_in_id:
+  error: "'planet-2' does not match"
+  document:
+    themes:
+      - {id: planet-2, name: Planet, file: themes/planet.yaml}
+missing_file:
+  error: "'file' is a required property"
+  document:
+    themes:
+      - {id: planet, name: Planet}
+absolute_file:
+  error: "'/themes/planet.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: /themes/planet.yaml}
+file_in_parent_dir:
+  error: "'../themes/planet.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: ../themes/planet.yaml}
+dot_dot_in_file:
+  error: "'themes/../indicator-selection.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: themes/../indicator-selection.yaml}
+file_outside_themes_dir:
+  error: "'indicator-selection.yaml' does not match"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: indicator-selection.yaml}
+empty_name:
+  error: "should be non-empty"
+  document:
+    themes:
+      - {id: planet, name: "", file: themes/planet.yaml}
+extra_theme_field:
+  error: "('order' was unexpected)"
+  document:
+    themes:
+      - {id: planet, name: Planet, file: themes/planet.yaml, order: 1}
+extra_top_level_field:
+  error: "('version' was unexpected)"
+  document:
+    version: 1
+    themes:
+      - {id: planet, name: Planet, file: themes/planet.yaml}
+no_themes:
+  error: "[] should be non-empty"
+  document:
+    themes: []

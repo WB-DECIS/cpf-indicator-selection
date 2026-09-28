@@ -1,0 +1,28 @@
+sectors:
+  - name: Energy
+    indicators:
+      - short_name: access_to_electricity
+        dataset_id: WB_WDI
+        indicator_id: WB_WDI_EG_ELC_ACCS_ZS
+        full_name: Access to electricity (% of population)
+        group: Access
+        direction: higher_is_better
+        label: Access to electricity
+  - name: Water
+    indicators:
+      - short_name: safely_managed_drinking_water
+        dataset_id: WB_WDI
+        indicator_id: WB_WDI_SH_H2O_SMDW_ZS
+        full_name: People using safely managed drinking water services (% of population)
+        group: WASH
+        direction: higher_is_better
+        label: Safe drinking water
+  - name: ICT and digital
+    indicators:
+      - short_name: internet_users
+        dataset_id: WB_WDI
+        indicator_id: WB_WDI_IT_NET_USER_ZS
+        full_name: Individuals using the Internet (% of population)
+        group: Access
+        direction: higher_is_better
+        label: Internet users
