@@ -1,0 +1,4 @@
+themes:
+  - id: infrastructure
+    name: Infrastructure
+    file: themes/infrastructure.yaml

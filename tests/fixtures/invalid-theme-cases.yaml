@@ -1,0 +1,83 @@
+# Theme documents the schema must reject. Each key is a test id; `error` is a
+# fragment of the message the schema must give; `document` is the theme file.
+missing_label:
+  error: "'label' is a required property"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better}
+empty_label:
+  error: "should be non-empty"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: ""}
+numeric_label:
+  error: "2020 is not of type 'string'"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: 2020}
+unknown_direction:
+  error: "'up' is not one of"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: up, label: L}
+string_sector_mean:
+  error: "'false' is not of type 'boolean'"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L, sector_mean: "false"}
+extra_indicator_field:
+  error: "('unit' was unexpected)"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L, unit: kg}
+extra_sector_field:
+  error: "('key' was unexpected)"
+  document:
+    sectors:
+      - name: Energy
+        key: energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L}
+extra_top_level_field:
+  error: "('pillar' was unexpected)"
+  document:
+    pillar: infrastructure
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L}
+empty_sector_name:
+  error: "should be non-empty"
+  document:
+    sectors:
+      - name: ""
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L}
+no_sectors:
+  error: "[] should be non-empty"
+  document:
+    sectors: []
+no_indicators:
+  error: "[] should be non-empty"
+  document:
+    sectors:
+      - name: Energy
+        indicators: []
+old_nested_shape:
+  error: "'sectors' is a required property"
+  document:
+    planet:
+      agriculture:
+        - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L}
