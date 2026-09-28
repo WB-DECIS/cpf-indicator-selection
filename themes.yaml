@@ -9,3 +9,6 @@ themes:
   - id: planet
     name: Planet
     file: themes/planet.yaml
+  - id: infrastructure
+    name: Infrastructure
+    file: themes/infrastructure.yaml

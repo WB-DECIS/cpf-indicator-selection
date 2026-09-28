@@ -11,3 +11,4 @@
 
 # One line per theme file, owned by that theme's team.
 /themes/planet.yaml   @WB-DECIS/planet-team
+/themes/infrastructure.yaml   @WB-DECIS/infrastructure-team

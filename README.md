@@ -117,6 +117,6 @@ hard-codes them.
 ## Ownership
 
 `.github/CODEOWNERS` gives the platform owner the index, the schema, the scripts and CI, and each
-theme's team its own file. The handles in it (`@WB-DECIS/cpf-platform`, `@WB-DECIS/planet-team`)
-are placeholders: replace them with real teams that have write access, and turn on "Require review
+theme's team its own file. The handles in it (`@WB-DECIS/cpf-platform`, `@WB-DECIS/planet-team`,
+`@WB-DECIS/infrastructure-team`) are placeholders: replace them with real teams that have write access, and turn on "Require review
 from Code Owners" in the branch protection of both `DEV` and `main`, or the file has no effect.

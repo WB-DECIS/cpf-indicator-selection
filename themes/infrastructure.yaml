@@ -1,0 +1,211 @@
+# themes/infrastructure.yaml
+# --------------------------
+# Infrastructure theme indicator list, owned by the Infrastructure team (see
+# CODEOWNERS). Transcribed from "CPF diagnostic Infrastructure indicators -
+# Groups.xlsx" (2026-09-28); edit this file directly from now on.
+# Validated against schema/theme.schema.json by scripts/validate.py.
+# List order is display order: sectors, sub-categories (group, by first
+# appearance) and indicators. Each indicator: short_name (stable API id,
+# unique in this file), dataset_id (Data360 DATABASE_ID), indicator_id,
+# full_name, group (-> sub_category), direction, label, and optionally
+# sector_mean (default true; false keeps it out of its sector's average).
+# "Multi-series" notes mark indicators for which Data360 returns several
+# series (units or breakdowns): cpf-data360-sync averages them all until it
+# supports per-indicator filters. Each note names the series wanted.
+sectors:
+  - name: Energy & Extractives
+    indicators:
+      # Not in Data360 yet (TBD in the source sheet), Availability,
+      # higher_is_better: Enrg_Gen_Capacity, Enrg_TD_Length.
+      - short_name: access_to_electricity
+        dataset_id: WB_SE4ALL
+        indicator_id: WB_SE4ALL_EG_ACS_ELEC
+        full_name: Access to electricity (% of population)
+        group: Availability
+        direction: higher_is_better
+        label: Access to electricity
+      - short_name: firms_with_electrical_outages
+        dataset_id: WB_WDI
+        indicator_id: WB_WDI_IC_ELC_OUTG_ZS
+        full_name: Firms experiencing electrical outages (% of firms)
+        group: Quality
+        direction: lower_is_better
+        label: Firms experiencing electrical outages
+      - short_name: electricity_td_losses
+        dataset_id: WB_WDI
+        indicator_id: WB_WDI_EG_ELC_LOSS_ZS
+        full_name: Electric power transmission and distribution losses (% of output)
+        group: Quality
+        direction: lower_is_better
+        label: Transmission and distribution losses
+      # Multi-series: COMP_BREAKDOWN_1 WB_ES_M_SECTOR_1..41 (manufacturing
+      # sub-sectors, no total). Wanted: WB_ES_M_SECTOR_1, which looks like the
+      # all-manufacturing aggregate (present in every country-year); to confirm.
+      - short_name: electricity_constraint_manufacturing
+        dataset_id: WB_ES
+        indicator_id: WB_ES_M_IN12
+        full_name: Percent of firms identifying electricity as a major or very severe constraint by sector - Manufacturing
+        group: Quality
+        direction: lower_is_better
+        label: Electricity as a constraint (manufacturing)
+      - short_name: electricity_affordability
+        dataset_id: WB_RISE
+        indicator_id: WB_RISE_CON_AFEL
+        full_name: Consumer Affordability of Electricity
+        group: Affordability
+        direction: higher_is_better
+        label: Consumer affordability of electricity
+      # Multi-series: UNIT_MEASURE PT_GDP, USD_K_2021. Wanted: PT_GDP.
+      - short_name: fossil_fuel_subsidies_electricity
+        dataset_id: IMF_FFS
+        indicator_id: IMF_FFS_ECGFTT
+        full_name: Fossil Fuel Subsidies - Total Implicit and Explicit - Electricity
+        group: Affordability
+        direction: higher_is_better
+        label: Fossil fuel subsidies (electricity)
+  - name: Global Infrastructure Finance
+    indicators:
+      - short_name: clean_energy_international_flows
+        dataset_id: WB_SE4ALL
+        indicator_id: WB_SE4ALL_EG_INFLW_IC
+        full_name: International financial flows to developing countries in support of clean energy, International Commitments (2020 USD millions)
+        group: Funding and Finance
+        direction: higher_is_better
+        label: International clean energy finance
+      - short_name: energy_efficiency_financing
+        dataset_id: WB_RISE
+        indicator_id: WB_RISE_EE_FMEE
+        full_name: Financing Mechanisms for Energy Efficiency
+        group: Funding and Finance
+        direction: higher_is_better
+        label: Financing mechanisms for energy efficiency
+      # Multi-series: COMP_BREAKDOWN_1/2 by infrastructure sector and
+      # sub-sector (14 series, no total). Wanted: the total (their sum).
+      # Latin America and the Caribbean only (21 countries).
+      - short_name: public_infrastructure_investment
+        dataset_id: IDB_INFRALATAM
+        indicator_id: IDB_INFRALATAM_3
+        full_name: Annual public investment in economic infrastructure at current prices in percentage of GDP
+        group: Funding and Finance
+        direction: higher_is_better
+        label: Public investment in economic infrastructure
+      - short_name: ppp_unsolicited_proposals
+        dataset_id: WB_BID
+        indicator_id: WB_BID_PPI_USP
+        full_name: 'Public Private Partnerships (PPP) Benchmarking: USP Score'
+        group: Public-Private Partnerships
+        direction: higher_is_better
+        label: 'PPP: unsolicited proposals'
+      - short_name: ppp_procurement
+        dataset_id: WB_BID
+        indicator_id: WB_BID_PPI_PRS
+        full_name: 'Public Private Partnerships (PPP) Benchmarking: Procurement Score'
+        group: Public-Private Partnerships
+        direction: higher_is_better
+        label: 'PPP: procurement'
+      - short_name: ppp_preparation
+        dataset_id: WB_BID
+        indicator_id: WB_BID_PPI_PPS
+        full_name: 'Public Private Partnerships (PPP) Benchmarking: Preparation Score'
+        group: Public-Private Partnerships
+        direction: higher_is_better
+        label: 'PPP: preparation'
+      - short_name: ppp_contract_management
+        dataset_id: WB_BID
+        indicator_id: WB_BID_PPI_CMS
+        full_name: 'Public Private Partnerships (PPP) Benchmarking: Contract Management Score'
+        group: Public-Private Partnerships
+        direction: higher_is_better
+        label: 'PPP: contract management'
+  - name: Transport
+    indicators:
+      # Not in Data360 yet (TBD in the source sheet), Availability,
+      # higher_is_better: Tran_Road_Length, Tran_Rail_Length.
+      # Multi-series: COMP_BREAKDOWN_1 WEF_TTDI_VAL, WEF_TTDI_SCR,
+      # WEF_TTDI_RNK. Wanted: WEF_TTDI_SCR.
+      - short_name: airport_connectivity
+        dataset_id: WEF_TTDI
+        indicator_id: WEF_TTDI_IATACONNECTIDX
+        full_name: Airport connectivity score
+        group: Availability
+        direction: higher_is_better
+        label: Airport connectivity
+      - short_name: liner_shipping_connectivity
+        dataset_id: UNCTAD_LSC
+        indicator_id: UNCTAD_LSC_INDEX
+        full_name: Liner shipping connectivity index
+        group: Availability
+        direction: higher_is_better
+        label: Liner shipping connectivity
+      # Multi-series: UNIT_MEASURE 0_TO_100, SCORE, RANK. Wanted: 0_TO_100.
+      - short_name: road_quality
+        dataset_id: WEF_GCI
+        indicator_id: WEF_GCI_ROADQUALIDX
+        full_name: 'GCI 4.0: Road quality index (0-100, best)'
+        group: Quality
+        direction: higher_is_better
+        label: Road quality
+      # Multi-series: UNIT_MEASURE 0_TO_100, RANK. Wanted: 0_TO_100.
+      - short_name: transport_infrastructure_gci
+        dataset_id: WEF_GCI
+        indicator_id: WEF_GCI_GCI4_A_02_01
+        full_name: 'GCI 4.0: Transport infrastructure'
+        group: Quality
+        direction: higher_is_better
+        label: Transport infrastructure (GCI)
+      # Multi-series: COMP_BREAKDOWN_1 _T, WB_LPI_CTMS; COMP_BREAKDOWN_2
+      # scores, ranks and their bounds. Wanted: _T and WB_LPI_SC.
+      - short_name: logistics_performance_index
+        dataset_id: WB_LPI
+        indicator_id: LPI_OVR
+        full_name: Logistics Performance Index (LPI) Overall Score
+        group: Quality
+        direction: higher_is_better
+        label: Logistics Performance Index
+  - name: Urban, Resilience and Land
+    indicators:
+      - short_name: urban_population_pct
+        dataset_id: WB_WDI
+        indicator_id: WB_WDI_SP_URB_TOTL_IN_ZS
+        full_name: Urban population (% of total population)
+        group: Urban
+        direction: higher_is_better
+        label: Urban population
+      - short_name: urban_population_growth
+        dataset_id: WB_WDI
+        indicator_id: WB_WDI_SP_URB_GROW
+        full_name: Urban population growth (annual %)
+        group: Urban
+        direction: higher_is_better
+        label: Urban population growth
+      # Multi-series: COMP_BREAKDOWN_1 _T and 7 loss types. Wanted: _T.
+      - short_name: disaster_agricultural_loss
+        dataset_id: UNDRR_SFM
+        indicator_id: UNDRR_SFM_C2
+        full_name: Direct agricultural loss attributed to disasters
+        group: Resilience
+        direction: lower_is_better
+        label: Agricultural loss from disasters
+      # Multi-series: UNIT_MEASURE DT, PS, 10P5PS by COMP_BREAKDOWN_1
+      # UNDRR_DT, UNDRR_MPS, _T. Wanted: 10P5PS with _T.
+      - short_name: disaster_deaths_missing
+        dataset_id: UNDRR_SFM
+        indicator_id: UNDRR_SFM_A1
+        full_name: 'A-1: Deaths and missing persons attributed to disasters'
+        group: Resilience
+        direction: lower_is_better
+        label: Disaster deaths and missing persons
+      - short_name: property_rights
+        dataset_id: VDEM_CORE
+        indicator_id: VDEM_CORE_V2XCL_PRPTY
+        full_name: Property rights
+        group: Land and Housing
+        direction: higher_is_better
+        label: Property rights
+      - short_name: house_price_to_income
+        dataset_id: IMF_GHW
+        indicator_id: IMF_GHW_PTI
+        full_name: House price-to-income ratio around the world
+        group: Land and Housing
+        direction: lower_is_better
+        label: House price-to-income ratio
