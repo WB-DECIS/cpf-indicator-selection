@@ -68,6 +68,16 @@ def test_sector_mean_false_is_allowed():
     Draft202012Validator(_schema("theme.schema.json")).validate(doc)
 
 
+def test_dimensions_and_most_recent_are_allowed():
+    doc = yaml.safe_load(
+        (FIXTURES / "valid" / "themes" / "infrastructure.yaml").read_text(encoding="utf-8")
+    )
+    indicator = doc["sectors"][0]["indicators"][0]
+    indicator["dimensions"] = {"UNIT_MEASURE": "10P5PS", "COMP_BREAKDOWN_1": "_T"}
+    indicator["most_recent"] = True
+    Draft202012Validator(_schema("theme.schema.json")).validate(doc)
+
+
 @pytest.mark.parametrize("case", sorted(THEME_CASES))
 def test_invalid_theme_fails(case):
     messages = _messages("theme.schema.json", THEME_CASES[case]["document"])

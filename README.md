@@ -42,6 +42,9 @@ sectors:
         direction: higher_is_better   # or lower_is_better
         label: Cereal yield
         # sector_mean: false       # optional, default true
+        # dimensions:              # optional: the Data360 series to keep
+        #   UNIT_MEASURE: PT_GDP
+        # most_recent: true        # optional, default false
 ```
 
 - **List order is display order** for sectors, sub-categories (`group`, in order of first
@@ -49,6 +52,15 @@ sectors:
 - **`sector_mean: false`** keeps an indicator in the per-indicator views but out of its sector's
   average (the sector bar in the Sectors view). Leave it out for the default, `true`. Planet uses
   it on `total_ghg_emissions`.
+- **`dimensions`** picks one series when Data360 returns several per country and period (several
+  units, or breakdowns such as a total next to its parts): one code for each dimension to fix,
+  among `UNIT_MEASURE`, `SEX`, `AGE`, `URBANISATION` and `COMP_BREAKDOWN_1` to `_3`.
+  `cpf-data360-sync` skips, and reports, an indicator that still has several series; it fails
+  the indicator when a listed code has no data.
+- **`most_recent: true`** always uses the country's most recent value: the latest period within
+  each year (the latest month of a monthly series, instead of the year's mean), and the country's
+  latest year, with no 80-country rule and no `>2010` average. Peers are compared in that year.
+  Planet uses it on `food_price_inflation`.
 - The same `short_name` may appear in another theme's file; an indicator is identified by
   `(theme, short_name)`.
 
@@ -61,8 +73,9 @@ problem otherwise. CI runs it and `pytest` on pull requests into, and pushes to,
   digits and underscores, starting with a letter, and each `file` is `themes/<name>.yaml`, with
   `<name>` following the same rule (no absolute paths, `..` or files outside `themes/`);
 - every theme file against `schema/theme.schema.json`: the seven fields above are required
-  non-empty strings, `direction` is one of the two values, `sector_mean` is a boolean, no other
-  keys, and no empty `sectors` or `indicators` lists;
+  non-empty strings, `direction` is one of the two values, `sector_mean` and `most_recent` are
+  booleans, `dimensions` keys are the dimensions listed above and their codes non-empty strings,
+  no other keys, and no empty `sectors`, `indicators` or `dimensions`;
 - the rules a schema cannot express, which `cpf-data360-sync` applies too:
   1. theme `id`s are unique in `themes.yaml`;
   2. every file `themes.yaml` lists exists;

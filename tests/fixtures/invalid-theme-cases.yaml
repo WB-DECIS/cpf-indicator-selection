@@ -81,3 +81,31 @@ old_nested_shape:
     planet:
       agriculture:
         - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L}
+unknown_dimension:
+  error: "('UNIT_MEASURES' was unexpected)"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L, dimensions: {UNIT_MEASURES: PT_GDP}}
+empty_dimensions:
+  error: "{} should be non-empty"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L, dimensions: {}}
+numeric_dimension_code:
+  error: "100 is not of type 'string'"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L, dimensions: {UNIT_MEASURE: 100}}
+string_most_recent:
+  error: "'true' is not of type 'boolean'"
+  document:
+    sectors:
+      - name: Energy
+        indicators:
+          - {short_name: a, dataset_id: D, indicator_id: I, full_name: F, group: G, direction: higher_is_better, label: L, most_recent: "true"}

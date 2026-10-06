@@ -8,7 +8,10 @@
 # appearance) and indicators. Each indicator: short_name (stable API id,
 # unique in this file), dataset_id (Data360 DATABASE_ID), indicator_id,
 # full_name, group (-> sub_category), direction, label, and optionally
-# sector_mean (default true; false keeps it out of its sector's average).
+# sector_mean (default true; false keeps it out of its sector's average),
+# dimensions (the Data360 series to keep, e.g. UNIT_MEASURE: PT_GDP) and
+# most_recent (default false; true always uses the country's latest value,
+# e.g. the latest month, with no 80-country rule or >2010 average).
 # Keep the four sector names unchanged until the multi-theme app is live.
 sectors:
   - name: Agriculture
@@ -20,6 +23,7 @@ sectors:
         group: Food and Nutrition
         direction: lower_is_better
         label: Food price inflation
+        most_recent: true
       - short_name: ipc_phase3_plus_population
         dataset_id: IPC_IPC
         indicator_id: IPC_IPC_P3PLUS
