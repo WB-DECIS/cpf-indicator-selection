@@ -43,6 +43,25 @@
         "sector_mean": {
           "description": "false keeps the indicator in the per-indicator views but out of its sector's average. Default true.",
           "type": "boolean"
+        },
+        "dimensions": {
+          "description": "The Data360 series to keep, as dimension: code (e.g. UNIT_MEASURE: PT_GDP). Needed when Data360 returns several series per country and period: cpf-data360-sync skips such an indicator until one series is selected.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "UNIT_MEASURE": { "$ref": "#/$defs/text" },
+            "SEX": { "$ref": "#/$defs/text" },
+            "AGE": { "$ref": "#/$defs/text" },
+            "URBANISATION": { "$ref": "#/$defs/text" },
+            "COMP_BREAKDOWN_1": { "$ref": "#/$defs/text" },
+            "COMP_BREAKDOWN_2": { "$ref": "#/$defs/text" },
+            "COMP_BREAKDOWN_3": { "$ref": "#/$defs/text" }
+          }
+        },
+        "most_recent": {
+          "description": "true always uses the country's most recent value: the latest period within each year (e.g. the latest month of a monthly series), and the country's latest year, with no 80-country rule and no >2010 average. Default false.",
+          "type": "boolean"
         }
       }
     }

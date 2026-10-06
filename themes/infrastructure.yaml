@@ -8,10 +8,13 @@
 # appearance) and indicators. Each indicator: short_name (stable API id,
 # unique in this file), dataset_id (Data360 DATABASE_ID), indicator_id,
 # full_name, group (-> sub_category), direction, label, and optionally
-# sector_mean (default true; false keeps it out of its sector's average).
+# sector_mean (default true; false keeps it out of its sector's average),
+# dimensions (the Data360 series to keep, e.g. UNIT_MEASURE: PT_GDP) and
+# most_recent (default false; true always uses the country's latest value,
+# e.g. the latest month, with no 80-country rule or >2010 average).
 # "Multi-series" notes mark indicators for which Data360 returns several
-# series (units or breakdowns): cpf-data360-sync averages them all until it
-# supports per-indicator filters. Each note names the series wanted.
+# series (units or breakdowns). Each note names the series wanted, selected
+# with dimensions; cpf-data360-sync skips a multi-series indicator without.
 sectors:
   - name: Energy & Extractives
     indicators:
@@ -48,6 +51,8 @@ sectors:
         group: Quality
         direction: lower_is_better
         label: Electricity as a constraint (manufacturing)
+        dimensions:
+          COMP_BREAKDOWN_1: WB_ES_M_SECTOR_1
       - short_name: electricity_affordability
         dataset_id: WB_RISE
         indicator_id: WB_RISE_CON_AFEL
@@ -63,6 +68,8 @@ sectors:
         group: Affordability
         direction: higher_is_better
         label: Fossil fuel subsidies (electricity)
+        dimensions:
+          UNIT_MEASURE: PT_GDP
   - name: Global Infrastructure Finance
     indicators:
       - short_name: clean_energy_international_flows
@@ -81,7 +88,8 @@ sectors:
         label: Financing mechanisms for energy efficiency
       # Multi-series: COMP_BREAKDOWN_1/2 by infrastructure sector and
       # sub-sector (14 series, no total). Wanted: the total (their sum).
-      # Latin America and the Caribbean only (21 countries).
+      # Latin America and the Caribbean only (21 countries). No dimensions:
+      # a sum can't be selected, so the sync skips it until sums are supported.
       - short_name: public_infrastructure_investment
         dataset_id: IDB_INFRALATAM
         indicator_id: IDB_INFRALATAM_3
@@ -130,6 +138,8 @@ sectors:
         group: Availability
         direction: higher_is_better
         label: Airport connectivity
+        dimensions:
+          COMP_BREAKDOWN_1: WEF_TTDI_SCR
       - short_name: liner_shipping_connectivity
         dataset_id: UNCTAD_LSC
         indicator_id: UNCTAD_LSC_INDEX
@@ -145,6 +155,8 @@ sectors:
         group: Quality
         direction: higher_is_better
         label: Road quality
+        dimensions:
+          UNIT_MEASURE: 0_TO_100
       # Multi-series: UNIT_MEASURE 0_TO_100, RANK. Wanted: 0_TO_100.
       - short_name: transport_infrastructure_gci
         dataset_id: WEF_GCI
@@ -153,6 +165,8 @@ sectors:
         group: Quality
         direction: higher_is_better
         label: Transport infrastructure (GCI)
+        dimensions:
+          UNIT_MEASURE: 0_TO_100
       # Multi-series: COMP_BREAKDOWN_1 _T, WB_LPI_CTMS; COMP_BREAKDOWN_2
       # scores, ranks and their bounds. Wanted: _T and WB_LPI_SC.
       - short_name: logistics_performance_index
@@ -162,6 +176,9 @@ sectors:
         group: Quality
         direction: higher_is_better
         label: Logistics Performance Index
+        dimensions:
+          COMP_BREAKDOWN_1: _T
+          COMP_BREAKDOWN_2: WB_LPI_SC
   - name: Urban, Resilience and Land
     indicators:
       - short_name: urban_population_pct
@@ -186,6 +203,8 @@ sectors:
         group: Resilience
         direction: lower_is_better
         label: Agricultural loss from disasters
+        dimensions:
+          COMP_BREAKDOWN_1: _T
       # Multi-series: UNIT_MEASURE DT, PS, 10P5PS by COMP_BREAKDOWN_1
       # UNDRR_DT, UNDRR_MPS, _T. Wanted: 10P5PS with _T.
       - short_name: disaster_deaths_missing
@@ -195,6 +214,9 @@ sectors:
         group: Resilience
         direction: lower_is_better
         label: Disaster deaths and missing persons
+        dimensions:
+          UNIT_MEASURE: 10P5PS
+          COMP_BREAKDOWN_1: _T
       - short_name: property_rights
         dataset_id: VDEM_CORE
         indicator_id: VDEM_CORE_V2XCL_PRPTY
