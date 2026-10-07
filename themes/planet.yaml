@@ -31,6 +31,8 @@ sectors:
         group: Food and Nutrition
         direction: lower_is_better
         label: Food insecurity
+        dimensions:
+          UNIT_MEASURE: PS
       - short_name: stunting_height_for_age_pct
         dataset_id: UNICEF_DW
         indicator_id: UNICEF_DW_NT_ANT_HAZ_NE2
@@ -38,6 +40,9 @@ sectors:
         group: Food and Nutrition
         direction: lower_is_better
         label: Stunting
+        dimensions:
+          SEX: _T
+          COMP_BREAKDOWN_1: UNICEF_DW_CLUSTER_1
       - short_name: cereal_yield
         dataset_id: WB_WDI
         indicator_id: WB_WDI_AG_YLD_CREL_KG
