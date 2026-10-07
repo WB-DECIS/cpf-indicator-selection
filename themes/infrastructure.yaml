@@ -79,6 +79,8 @@ sectors:
         group: Funding and Finance
         direction: higher_is_better
         label: International clean energy finance
+        dimensions:
+          COMP_BREAKDOWN_1: WB_SE4ALL_RENEWSRC_ALLRENEW
       - short_name: energy_efficiency_financing
         dataset_id: WB_RISE
         indicator_id: WB_RISE_EE_FMEE
