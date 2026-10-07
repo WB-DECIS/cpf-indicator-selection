@@ -86,17 +86,6 @@ sectors:
         group: Funding and Finance
         direction: higher_is_better
         label: Financing mechanisms for energy efficiency
-      # Multi-series: COMP_BREAKDOWN_1/2 by infrastructure sector and
-      # sub-sector (14 series, no total). Wanted: the total (their sum).
-      # Latin America and the Caribbean only (21 countries). No dimensions:
-      # a sum can't be selected, so the sync skips it until sums are supported.
-      - short_name: public_infrastructure_investment
-        dataset_id: IDB_INFRALATAM
-        indicator_id: IDB_INFRALATAM_3
-        full_name: Annual public investment in economic infrastructure at current prices in percentage of GDP
-        group: Funding and Finance
-        direction: higher_is_better
-        label: Public investment in economic infrastructure
       - short_name: ppp_unsolicited_proposals
         dataset_id: WB_BID
         indicator_id: WB_BID_PPI_USP
@@ -177,7 +166,7 @@ sectors:
         direction: higher_is_better
         label: Logistics Performance Index
         dimensions:
-          COMP_BREAKDOWN_1: _T
+          COMP_BREAKDOWN_1: WB_LPI_INF
           COMP_BREAKDOWN_2: WB_LPI_SC
   - name: Urban, Resilience and Land
     indicators:
@@ -196,15 +185,15 @@ sectors:
         direction: higher_is_better
         label: Urban population growth
       # Multi-series: COMP_BREAKDOWN_1 _T and 7 loss types. Wanted: _T.
-      - short_name: disaster_agricultural_loss
+      - short_name: damaged_dwellings_from_disasters
         dataset_id: UNDRR_SFM
-        indicator_id: UNDRR_SFM_C2
-        full_name: Direct agricultural loss attributed to disasters
+        indicator_id: UNDRR_SFM_B3
+        full_name: Damaged dwellings attributed to disasters
         group: Resilience
         direction: lower_is_better
-        label: Agricultural loss from disasters
+        label: Damaged dwellings from disasters
         dimensions:
-          COMP_BREAKDOWN_1: _T
+          UNIT_MEASURE: DWL
       # Multi-series: UNIT_MEASURE DT, PS, 10P5PS by COMP_BREAKDOWN_1
       # UNDRR_DT, UNDRR_MPS, _T. Wanted: 10P5PS with _T.
       - short_name: disaster_deaths_missing
