@@ -141,13 +141,13 @@ sectors:
       # Multi-series: UNIT_MEASURE 0_TO_100, SCORE, RANK. Wanted: 0_TO_100.
       - short_name: road_quality
         dataset_id: WEF_GCI
-        indicator_id: WEF_GCI_ROADQUALIDX
-        full_name: 'GCI 4.0: Road quality index (0-100, best)'
+        indicator_id: WEF_GCI_EOSQ057
+        full_name: 'GCI 4.0: Quality of roads (1-7)'
         group: Quality
         direction: higher_is_better
         label: Road quality
         dimensions:
-          UNIT_MEASURE: 0_TO_100
+          UNIT_MEASURE: 1_TO_7
       # Multi-series: UNIT_MEASURE 0_TO_100, RANK. Wanted: 0_TO_100.
       - short_name: transport_infrastructure_gci
         dataset_id: WEF_GCI
